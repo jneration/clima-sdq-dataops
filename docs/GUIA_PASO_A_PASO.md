@@ -31,7 +31,7 @@ Cifras y salidas de esta guía provienen de ejecuciones reales del 28/09/2026. A
 |---|---|
 | `1a81390` Paso 1 | 0 y 1: estructura, `.gitignore`, `requirements.txt`, base de datos |
 | `da24e72` Paso 2 | 2: `config.py` y `extraer.py` |
-| `d2458c8` Paso 3 | 3: `validar.py`, `cargar.py`, pruebas y CI |
+| `d2458c8` Paso 3 | 3: `validar.py`, `cargar.py`, pruebas y un workflow de CI (retirado después, ver paso 7) |
 | `1b70f3b` Paso 4 | 4: agregados y `pipeline.py` |
 | `7f9e0d8` Paso 5 | 5 y 6: tarea programada, vistas para Power BI y README |
 
@@ -205,8 +205,9 @@ git push -u origin main
 
 Git Credential Manager abre el navegador para autenticarte.
 
-**Resultado esperado:** el repositorio se ve con el README y el diagrama de arquitectura dibujado; en la pestaña **Actions** el workflow `CI` corre las pruebas y sale en verde.
-**Evidencia:** captura de la página del repositorio, de *Commits* y de *Actions* en verde.
+**Resultado esperado:** el repositorio se ve con el README y el diagrama de arquitectura dibujado.
+**Evidencia:** captura de la página del repositorio y de *Commits*.
+**Sin CI:** se probó GitHub Actions, pero la cuenta tuvo un bloqueo de facturación y el job no llegó a ejecutarse (fallaba en 2 segundos, sin pasos). El workflow se retiró para no dejar una marca roja en el repositorio. Las pruebas se ejecutan en local con `pytest` (11 passed). Puedes mencionarlo como limitación y como mejora futura.
 **Seguridad:** el repositorio es público y no contiene credenciales (autenticación de Windows). Los JSON crudos y los logs están en `.gitignore`.
 
 ## Paso 8. Demostración de calidad (opcional)
@@ -329,7 +330,7 @@ Extensión sugerida: 8 a 10 páginas, más anexos. Ajusta al formato que pida el
 | Principio DataOps | Cómo se aplicó | Evidencia |
 |---|---|---|
 | Control de versiones | Todo el código y los SQL en Git y GitHub | Historial de commits |
-| Calidad de datos automatizada | 5 reglas de validación, pruebas en pytest y CI | `validar.py`, 11 pruebas, Actions |
+| Calidad de datos automatizada | 5 reglas de validación y 11 pruebas de pytest ejecutadas en local | `validar.py`, salida de pytest |
 | Automatización del pipeline | `pipeline.py` y tarea diaria programada | Programador de tareas, logs |
 | Monitoreo | `ops.log_carga`, alerta de frescura y página de Calidad | Dashboard, página 3 |
 | Entregas incrementales | Cuatro iteraciones con objetivo y entregable | Tabla de sprints |
@@ -341,7 +342,7 @@ Extensión sugerida: 8 a 10 páginas, más anexos. Ajusta al formato que pida el
 |---|---|---|
 | 1. Definición y base | Definir problema y crear la base | Pasos 0 y 1: repositorio, `ClimaSDQ` |
 | 2. Ingesta | Extraer y guardar datos | Paso 2: `extraer.py`, carga histórica |
-| 3. Calidad y transformación | Validar, cargar y agregar | Pasos 3 y 4: reglas, MERGE, agregados, pruebas, CI |
+| 3. Calidad y transformación | Validar, cargar y agregar | Pasos 3 y 4: reglas, MERGE, agregados, pruebas |
 | 4. Visualización y cierre | Dashboard, programación y documentación | Pasos 5 a 9 |
 
 ### 10.2 Esqueleto y texto base
@@ -360,7 +361,7 @@ Objetivo general: desarrollar un sistema que recoja, almacene, procese y visuali
 
 Añade licencia (CC BY 4.0) y las variables. Indica el punto geográfico y la zona horaria. Si el profesor exige IoT estricto, dilo en las limitaciones y propón sumar un sensor propio (por ejemplo, ESP32 con DHT22 publicando por MQTT) como trabajo futuro.
 
-**4. Arquitectura y herramientas.** Inserta el diagrama Mermaid del README como imagen (exporta desde GitHub o mermaid.live). Tabla: Python (extracción y validación), SQL Server (almacenamiento y agregados), Power BI (visualización), Git y GitHub Actions (control de versiones y pruebas), Programador de tareas (automatización).
+**4. Arquitectura y herramientas.** Inserta el diagrama Mermaid del README como imagen (exporta desde GitHub o mermaid.live). Tabla: Python (extracción y validación), SQL Server (almacenamiento y agregados), Power BI (visualización), Git y GitHub (control de versiones), pytest (pruebas), Programador de tareas (automatización).
 
 **5. Modelo de datos.** Tabla de esquemas del paso 1 y explicación de las capas: `raw` conserva lo recibido, `clean` contiene datos validados, `agg` resume por día y `ops` audita cada carga. Justifica: separar capas permite reprocesar sin volver a llamar a la API.
 
@@ -418,7 +419,7 @@ Trabajo futuro: sensor propio por MQTT, actualización automática en Power BI S
 | 5 | Salida del pipeline y `ops.log_carga` | 4 |
 | 6 | `agg.clima_diario` (últimos días) | 4 |
 | 7 | Programador de tareas (desencadenador y acción) | 5 |
-| 8 | Repositorio en GitHub, commits y Actions en verde | 7 |
+| 8 | Repositorio en GitHub y commits | 7 |
 | 9 | Rechazos por motivo (demo) | 8 |
 | 10 | Las 3 páginas del dashboard | 9 |
 
@@ -450,7 +451,6 @@ FROM bi.v_clima_diario;
 
 ```
 proyecto-clima/
-├─ .github/workflows/ci.yml       CI: corre pytest en cada push
 ├─ docs/GUIA_PASO_A_PASO.md       esta guía
 ├─ scripts/registrar_tarea.ps1    programa la carga diaria (paso 5)
 ├─ scripts/demo_calidad.py        demostración de calidad (paso 8)

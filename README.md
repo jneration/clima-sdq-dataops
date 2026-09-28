@@ -14,7 +14,7 @@ flowchart LR
     E --> F
     F --> G[Power BI]
     H[Programador de tareas<br/>diario 6:00 a.m.] --> B
-    I[Git + GitHub Actions<br/>pruebas automáticas] -.controla.-> C
+    I[Git + GitHub<br/>control de versiones] -.versiona.-> C
 ```
 
 ## Capas de datos (SQL Server, base `ClimaSDQ`)
