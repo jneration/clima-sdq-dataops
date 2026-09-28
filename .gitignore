@@ -1,0 +1,12 @@
+# Entorno y caché de Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Datos y logs generados (se reproducen con el pipeline)
+datos/raw/*.json
+logs/*.log
+
+# Credenciales (no se usan con autenticación de Windows, por si acaso)
+.env
